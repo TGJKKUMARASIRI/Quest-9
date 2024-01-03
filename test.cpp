@@ -14,23 +14,28 @@ public:
     }
 };
 
-struct Account {
+class Account {
+public:
     int accountNumber;
+    double overdraftLimit;
+    double balance; // Additional field to store balance
     Account* next;
 
-    Account(int number) : accountNumber(number), next(nullptr) {}
+    Account(int number) : accountNumber(number), overdraftLimit(0.0), balance(0.0), next(nullptr) {}
 };
 
 class BankEmployee : public User {
 private:
-    struct Customer {
+    class Customer {
+    public:
         std::string name;
         Account* accounts;
 
         Customer(const std::string& cname) : name(cname), accounts(nullptr) {}
     };
 
-    struct Node {
+    class Node {
+    public:
         Customer customer;
         Node* next;
 
@@ -58,7 +63,13 @@ public:
                 Account* newAccount = new Account(accountNumber);
                 newAccount->next = current->customer.accounts;
                 current->customer.accounts = newAccount;
-                std::cout << "Created account for " << customerName << " of type " << accountType << " with number " << accountNumber << std::endl;
+
+                if (accountType == "Current") {
+                    // Set overdraft limit for current account
+                    newAccount->overdraftLimit = 500; // Example overdraft limit for a current account
+                }
+
+                std::cout << "Created " << accountType << " account for " << customerName << " with number " << accountNumber << std::endl;
                 return;
             }
             current = current->next;
@@ -96,8 +107,6 @@ public:
         std::cout << "Customer not found: " << customerName << std::endl;
     }
 
-    
-
     void Deposit(const std::string& customerName, int accountNumber, double amount) {
         Node* current = customersHead;
         while (current) {
@@ -105,7 +114,7 @@ public:
                 Account* currAccount = current->customer.accounts;
                 while (currAccount) {
                     if (currAccount->accountNumber == accountNumber) {
-                        // Code to deposit money into an account
+                        currAccount->balance += amount;
                         std::cout << "Deposited $" << amount << " into account " << accountNumber << " of " << customerName << std::endl;
                         return;
                     }
@@ -126,8 +135,12 @@ public:
                 Account* currAccount = current->customer.accounts;
                 while (currAccount) {
                     if (currAccount->accountNumber == accountNumber) {
-                        // Code to withdraw money from an account
-                        std::cout << "Withdrawn $" << amount << " from account " << accountNumber << " of " << customerName << std::endl;
+                        if (currAccount->balance >= amount) {
+                            currAccount->balance -= amount;
+                            std::cout << "Withdrawn $" << amount << " from account " << accountNumber << " of " << customerName << std::endl;
+                        } else {
+                            std::cout << "Insufficient funds in account " << accountNumber << " of " << customerName << std::endl;
+                        }
                         return;
                     }
                     currAccount = currAccount->next;
@@ -140,7 +153,7 @@ public:
         std::cout << "Customer not found: " << customerName << std::endl;
     }
 
-     void SetOverdraftLimit(int accountNumber, double limit) {
+    void SetOverdraftLimit(int accountNumber, double limit) {
         Node* current = customersHead;
         while (current) {
             Account* currAccount = current->customer.accounts;
@@ -156,7 +169,6 @@ public:
         }
         std::cout << "Account " << accountNumber << " not found" << std::endl;
     }
-};
 
     void ViewTransactions(int accountNumber) {
         Node* current = customersHead;
@@ -164,9 +176,8 @@ public:
             Account* currAccount = current->customer.accounts;
             while (currAccount) {
                 if (currAccount->accountNumber == accountNumber) {
-                    // Code to view transactions of an account
                     std::cout << "Viewing transactions for account " << accountNumber << std::endl;
-                    // Example: Fetch and display transactions
+                    // Fetch and display transactions (for example, log text file)
                     return;
                 }
                 currAccount = currAccount->next;
@@ -177,4 +188,16 @@ public:
     }
 };
 
+int main() {
+    // Example usage
+    BankEmployee bankEmployee("username", "password");
 
+    bankEmployee.AddCustomer("Customer1");
+    bankEmployee.CreateAccount("Customer1", "Savings");
+    bankEmployee.SetOverdraftLimit(1001, 500); // Set overdraft limit for account number 1001 to $500
+    bankEmployee.Deposit("Customer1", 1001, 1000); // Deposit $1000 to account number 1001 for Customer1
+    bankEmployee.Withdraw("Customer1", 1001, 700); // Withdraw $700 from account number 1001 for Customer1
+    bankEmployee.ViewTransactions(1001); // View transactions for account number 1001
+
+    return 0;
+}
