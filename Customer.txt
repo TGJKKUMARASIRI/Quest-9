@@ -1,13 +1,16 @@
 Customer001
 Harry Potter
 0778493941
-
+2000
 Customer002
 Ron Weasley
 0179432562
+700
 Customer003
 Hermion Granger
 0714563728
+900
 Customer004
 Ginny Weasley
 0998294758
+1000
