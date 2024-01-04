@@ -1,3 +1,5 @@
+// T.G.J.K. Kumarasiri 21/ENG/147
+
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -140,6 +142,7 @@ public:
         cout << "2. Deposit" << endl;
         cout << "3. Withdraw" << endl;
         cout << "4. View the Personal Information" << endl;
+        cout << "5. exit" << endl;
     }
 
     // function to view the personal information
@@ -236,6 +239,7 @@ public:
         cout << "4. Deposit the money to an account" << endl;
         cout << "5. Withdraw the money from an account" << endl;
         cout << "6. view transactions of an account" << endl;
+        cout << "7. exit" << endl;
     }
 };
 
@@ -255,6 +259,16 @@ public:
         CurrentEmployee = CurrentEmployee->NextEmployee;
         sprintf(CurrentEmployee->Bufffer, "employee%03d", ID + 1);
         CurrentEmployee->NextEmployee = NULL;
+    }
+
+    // function to display admin menu
+    void DisplayAdminMenu()
+    {
+        cout << "1. Add a new employee" << endl;
+        cout << "2. Increase day by one day" << endl;
+        cout << "3. Set new annual savings interest" << endl;
+        cout << "4. Set a new overdraft charge" << endl;
+        cout << "5. exit" << endl;
     }
 };
 
@@ -342,10 +356,65 @@ public:
 
     void UserAuthontication()
     {
-        char choice;
+        char choice = '0';
         string username(user->Username);
         if (username == "administrator")
         {
+            Admin *admin = new Admin;
+
+            while (choice != '5')
+            {
+                // display the admin menu
+                admin->DisplayAdminMenu();
+                cout << "Enter your choice: ";
+                cin >> choice;
+
+                // switch case to admin menu
+                switch (choice)
+                {
+                case '1':
+                {
+                    cout << "New Employee added" << endl;
+                    // travel to the last emplyee in the linked list
+                    Employee *currentEmployee = HeadEmployee;
+                    while (currentEmployee->NextEmployee != NULL)
+                    {
+                        currentEmployee = currentEmployee->NextEmployee;
+                    }
+                    string user = currentEmployee->Username;
+                    admin->AddEmployee(HeadEmployee, GettingTheID(user));
+                    break;
+                }
+                case '2':
+                {
+                    cout << "Day increased by 1" << endl;
+                    break;
+                }
+                case '3':
+                {
+                    cout << "New annual interest: " << endl;
+                    double interest;
+                    cin >> interest;
+                    break;
+                }
+                case '4':
+                {
+                    cout << "New overdraft charge: " << endl;
+                    double charge;
+                    cin >> charge;
+                    break;
+                }
+                case '5':
+                {
+                    break;
+                }
+                default:
+                {
+                    cout << "Invalid Input" << endl;
+                    break;
+                }
+                }
+            }
         }
         else if (username.compare(0, 8, "employee") == 0)
         {
@@ -374,41 +443,53 @@ public:
             string Id(CurrentCustomer->Username);
             if (ID == GettingTheID(Id))
             {
+                char choice = '0';
                 cout << "Welcome!" << endl;
                 // CurrentCustomer->GetAccountInfo();
-                // CurrentCustomer->DisplayCustomerMenu();
-                char choice;
-                cout << "Enter your choice: ";
-                cin >> choice;
+                while (choice != '5')
+                {
+                    CurrentCustomer->DisplayCustomerMenu();
 
-                switch (choice)
-                {
-                case '1':
-                {
-                    cout << "View Transactions" << endl;
-                    CurrentCustomer->DisplayTransactionInformation();
-                    break;
-                }
-                case '2':
-                {
-                    cout << "Deposit" << endl;
-                    break;
-                }
-                case '3':
-                {
-                    cout << "Withdraw" << endl;
-                    break;
-                }
-                case '4':
-                {
-                    CurrentCustomer->ViewPersonalInfo();
-                    break;
-                }
-                default:
-                {
-                    cout << "Invalid Input" << endl;
-                    break;
-                }
+                    cout << "Enter your choice: ";
+                    cin >> choice;
+
+                    switch (choice)
+                    {
+                    case '1':
+                    {
+                        cout << "View Transactions" << endl;
+                        // CurrentCustomer->DisplayTransactionInformation();
+                        break;
+                    }
+                    case '2':
+                    {
+                        cout << "Deposit amount: " << endl;
+                        double amount;
+                        cin >> amount;
+                        break;
+                    }
+                    case '3':
+                    {
+                        cout << "Withdraw" << endl;
+                        double amount;
+                        cin >> amount;
+                        break;
+                    }
+                    case '4':
+                    {
+                        CurrentCustomer->ViewPersonalInfo();
+                        break;
+                    }
+                    case '5':
+                    {
+                        break;
+                    }
+                    default:
+                    {
+                        cout << "Invalid Input" << endl;
+                        break;
+                    }
+                    }
                 }
                 break;
             }
@@ -431,48 +512,88 @@ public:
             if (ID == GettingTheID(Id))
             {
                 cout << "Welcome!" << endl;
-                CurrentEmployee->DisplayEmployeeMenu();
-                char choice;
-                cout << "Enter your choice: ";
-                cin >> choice;
+                char choice = '0';
 
-                switch (choice)
+                while (choice != '7')
                 {
-                case '1':
-                {
-                    cout << "Add a new customer" << endl;
-                    break;
-                }
-                case '2':
-                {
-                    cout << "Create saving or current account" << endl;
-                    break;
-                }
-                case '3':
-                {
-                    cout << "Close the customer\'s account" << endl;
-                    break;
-                }
-                case '4':
-                {
-                    cout << "Deposit the money to an account" << endl;
-                    break;
-                }
-                case '5':
-                {
-                    cout << "Withdraw the money from an account" << endl;
-                    break;
-                }
-                case '6':
-                {
-                    cout << "view transactions of an account" << endl;
-                    break;
-                }
-                default:
-                {
-                    cout << "Invalid Input" << endl;
-                    break;
-                }
+                    CurrentEmployee->DisplayEmployeeMenu();
+
+                    cout << "Enter your choice: ";
+                    cin >> choice;
+                    switch (choice)
+                    {
+                    case '1':
+                    {
+                        Customer *CurrentCustomer;
+                        CurrentCustomer = HeadCustomer;
+                        while (CurrentCustomer->NextCustomer != NULL)
+                        {
+                            CurrentCustomer = CurrentCustomer->NextCustomer;
+                        }
+                        string userc(CurrentCustomer->Username);
+                        CurrentEmployee->AddCustomer(HeadCustomer, GettingTheID(userc));
+                        if (CurrentCustomer->NextCustomer != NULL)
+                        {
+                            CurrentCustomer = CurrentCustomer->NextCustomer;
+                        }
+                        cout << "Name of the New customer: ";
+                        cin >> CurrentCustomer->name;
+                        cout << "Phone number of the New customer: ";
+                        cin >> CurrentCustomer->phone;
+                        cout << "New customer added" << endl;
+                        break;
+                    }
+                    case '2':
+                    {
+                        cout << "Customer username: ";
+                        string username;
+                        cin >> username;
+                        break;
+                    }
+                    case '3':
+                    {
+                        cout << "Customer username: ";
+                        string username;
+                        cin >> username;
+                        break;
+                    }
+                    case '4':
+                    {
+                        cout << "Customer username: ";
+                        string username;
+                        cin >> username;
+                        cout << "Deposit amount: " << endl;
+                        double amount;
+                        cin >> amount;
+                        break;
+                    }
+                    case '5':
+                    {
+                        cout << "Customer username: ";
+                        string username;
+                        cin >> username;
+                        cout << "Wthdraw amount: " << endl;
+                        double amount;
+                        cin >> amount;
+                        break;
+                    }
+                    case '6':
+                    {
+                        cout << "Customer username: ";
+                        string username;
+                        cin >> username;
+                        break;
+                    }
+                    case '7':
+                    {
+                        break;
+                    }
+                    default:
+                    {
+                        cout << "Invalid Input" << endl;
+                        break;
+                    }
+                    }
                 }
                 break;
             }
