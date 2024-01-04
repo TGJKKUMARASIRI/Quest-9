@@ -51,7 +51,7 @@ public:
     double amount;
     double AnualInterestRate;
 
-    //function to money withdraw when the amount is given
+    // function to money withdraw when the amount is given
     void Withdraw(int amount)
     {
         if (amount > this->amount)
@@ -81,7 +81,7 @@ public:
     double OverdraftLimit;
     double OverdraftAmount;
 
-    //function to money withdraw when the amount is given
+    // function to money withdraw when the amount is given
     void Withdraw(int amount)
     {
         if (amount > this->amount)
@@ -127,11 +127,11 @@ class Customer : public User
 {
 public:
     Customer *NextCustomer;
-    SavingsAccounts *HeadSavingsAccounts;
-    CurrentAccounts *HeadCurrentAccounts;
     char Username[128];
     char name[128];
     char phone[128];
+    SavingsAccounts *savingsAccount;
+    CurrentAccounts *currentAccount;
 
     // function to display the customer menu
     void DisplayCustomerMenu()
@@ -142,11 +142,67 @@ public:
         cout << "4. View the Personal Information" << endl;
     }
 
-    //function to view the personal information
+    // function to view the personal information
     void ViewPersonalInfo()
     {
         cout << "Name: " << name << endl;
         cout << "Phone number: " << phone << endl;
+    }
+
+    // function to get the account information from a file that has the username as it's name
+    // void GetAccountInfo()
+    // {
+    //     cout << "In the function" << endl; //comment
+    //     string username(Username);
+    //     username += ".txt";
+    //     cout << "Name: " << username << endl; //comment
+    //     ifstream AccountInfo(username);
+    //     cout << "Hi" << endl; //comment
+    //     if (!AccountInfo.is_open())
+    //     {
+    //         cerr << "Error opening file" << endl;
+    //         return;
+    //     }
+    //     cout << "Opened the file" << endl; //comment
+    //     char Buffer[128];
+    //     AccountInfo.getline(Buffer, 128);
+    //     cout << Buffer << endl; //comment
+    //     string AccType = Buffer;
+    //     if (stoi(AccType) == 0)
+    //     {
+    //         savingsAccount = new SavingsAccounts;
+    //         AccountInfo.getline(Buffer, 128);
+    //         cout << Buffer << endl; //comment
+    //         savingsAccount->AnualInterestRate = stod(Buffer);
+    //         // should reed the last line of the file to get the ammount
+    //         while (AccountInfo.eof() == false)
+    //         {
+    //             AccountInfo.getline(Buffer, 128);
+    //             cout << Buffer << endl; //comment
+    //         }
+    //         string Amount = Buffer;
+    //         savingsAccount->amount = stod(Amount);
+    //     }
+    //     else
+    //     {
+    //     }
+    //     AccountInfo.close();
+    // }
+
+    // function to display the user account information
+    void DisplayTransactionInformation()
+    {
+        string username(Username);
+        username += ".txt";
+        ifstream AccountInfo(username);
+        char Buffer[128];
+        AccountInfo.getline(Buffer, 128);
+        AccountInfo.getline(Buffer, 128);
+        while (AccountInfo.eof() == false)
+        {
+            AccountInfo.getline(Buffer, 128);
+            cout << Buffer << endl;
+        }
     }
 };
 
@@ -319,7 +375,8 @@ public:
             if (ID == GettingTheID(Id))
             {
                 cout << "Welcome!" << endl;
-                CurrentCustomer->DisplayCustomerMenu();
+                // CurrentCustomer->GetAccountInfo();
+                // CurrentCustomer->DisplayCustomerMenu();
                 char choice;
                 cout << "Enter your choice: ";
                 cin >> choice;
@@ -329,6 +386,7 @@ public:
                 case '1':
                 {
                     cout << "View Transactions" << endl;
+                    CurrentCustomer->DisplayTransactionInformation();
                     break;
                 }
                 case '2':
