@@ -42,14 +42,96 @@ public:
     };
 };
 
+class SavingsAccounts
+{
+public:
+    string AccountNumber;
+    string CustomerName;
+    string PhoneNumber;
+    double amount;
+    double AnualInterestRate;
+
+    //function to money withdraw when the amount is given
+    void Withdraw(int amount)
+    {
+        if (amount > this->amount)
+        {
+            cout << "Insufficient balance" << endl;
+        }
+        else
+        {
+            this->amount -= amount;
+        }
+    }
+
+    void Deposit(int amount)
+    {
+        this->amount += amount;
+    }
+};
+
+class CurrentAccounts
+{
+public:
+    string AccountNumber;
+    string CustomerName;
+    string PhoneNumber;
+    double amount;
+    double AnualInterestRate;
+    double OverdraftLimit;
+    double OverdraftAmount;
+
+    //function to money withdraw when the amount is given
+    void Withdraw(int amount)
+    {
+        if (amount > this->amount)
+        {
+            if (amount > this->amount + this->OverdraftLimit)
+            {
+                cout << "Insufficient balance" << endl;
+            }
+            else
+            {
+                this->OverdraftAmount = amount - this->amount;
+                this->amount = 0;
+            }
+        }
+        else
+        {
+            this->amount -= amount;
+        }
+    }
+
+    void Deposit(int amount)
+    {
+        if (this->OverdraftAmount > 0)
+        {
+            if (amount > this->OverdraftAmount)
+            {
+                this->amount += amount - this->OverdraftAmount;
+                this->OverdraftAmount = 0;
+            }
+            else
+            {
+                this->OverdraftAmount -= amount;
+            }
+        }
+        else
+        {
+            this->amount += amount;
+        }
+    }
+};
+
 class Customer : public User
 {
 public:
     Customer *NextCustomer;
+    SavingsAccounts *HeadSavingsAccounts;
+    CurrentAccounts *HeadCurrentAccounts;
     char Username[128];
     char name[128];
     char phone[128];
-    char amount[128];
 
     // function to display the customer menu
     void DisplayCustomerMenu()
@@ -132,6 +214,7 @@ public:
     // function to get the customer information from the file while creating a customer linked list
     void GetCustomerInfo()
     {
+        char Buffer[128];
         ifstream CustomerInfo("Customer.txt");
         Customer *CurrentCustomer;
         HeadCustomer = new Customer;
@@ -141,7 +224,6 @@ public:
             CustomerInfo.getline(CurrentCustomer->Username, 128);
             CustomerInfo.getline(CurrentCustomer->name, 128);
             CustomerInfo.getline(CurrentCustomer->phone, 128);
-            CustomerInfo.getline(CurrentCustomer->amount, 128);
             CurrentCustomer->NextCustomer = new Customer;
             CurrentCustomer = CurrentCustomer->NextCustomer;
         }
@@ -157,7 +239,6 @@ public:
             cout << CurrentCustomer->Username << endl;
             cout << CurrentCustomer->name << endl;
             cout << CurrentCustomer->phone << endl;
-            cout << CurrentCustomer->amount << endl;
             CurrentCustomer = CurrentCustomer->NextCustomer;
         }
     }
